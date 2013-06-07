@@ -14,7 +14,8 @@ install:
     - python setup.py build
 
 before_script:
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then flake8 --exit-zero rdfalchemy; fi
+    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then flake8 rdfalchemy; fi
+
 script:
     - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then nosetests; fi
     # Must cd somewhere else ("build/src" in this instance) so Python3 doesn't
