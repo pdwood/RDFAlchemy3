@@ -2,7 +2,7 @@ from rdfalchemy import Namespace
 from rdfalchemy.Literal import Literal
 from datetime import datetime
 from decimal import Decimal
-from rdflib.term import bind as bindLiteral
+# from rdflib.term import bind as bindLiteral
 
 import logging
 log = logging.getLogger()
@@ -25,8 +25,8 @@ def toPython_decimal_test():
     # test a normal iso
     d = Literal('.1', datatype=XSD.decimal).toPython()
     assert isinstance(d, Decimal)
-    payments = [Literal(s, datatype=XSD.decimal)
-                    for s in '.1 .1 .1 -.3'.split()]
+    payments = [
+        Literal(s, datatype=XSD.decimal) for s in '.1 .1 .1 -.3'.split()]
     assert sum([payment.toPython() for payment in payments]) == 0
 
 

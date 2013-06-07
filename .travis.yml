@@ -5,15 +5,17 @@ python:
     - 2.6
     - 2.7
     - 3.2
+    - 3.3
 install:
     - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install --use-mirrors simplejson; fi
     - pip install -r requirements.txt --use-mirrors
     - python setup.py build
+
+before_script:
+    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then flake8 --exit-zero rdfalchemy; fi
 script:
-    # Must cd somewhere else so python3 doesn't get confused and run
-    # the python2 code from the current directory instead of the installed
-    # 2to3 version.
-    - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then nosetests; fi
-    - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then nosetests; fi
-    - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then nosetests; fi
-    - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then nosetests --where=build/src; fi
+    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then nosetests; fi
+    # Must cd somewhere else ("build/src" in this instance) so Python3 doesn't
+    # get confused and run the Python 2 code from the current directory
+    # instead of the installed 2to3 translated version.
+    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then nosetests --where=build/src; fi

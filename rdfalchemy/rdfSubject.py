@@ -1,5 +1,4 @@
 """
-============================================================================================
 rdfalchemy.py - a Simple API for RDF
 
 
@@ -27,9 +26,9 @@ re_ns_n = re.compile('(.*[/#])(.*)')
 # Note: Non data descriptors (get only) lookup in obj.__dict__ first
 #       Data descriptors (get and set) use the __get__ first
 
-###############################################################################
+#
 # define our Base Class for all "subjects" in python
-###############################################################################
+#
 
 
 class rdfSubject(object):
@@ -58,8 +57,9 @@ class rdfSubject(object):
 
         elif isinstance(resUri, (BNode, URIRef)):  # use the identifier passed
             self.resUri = resUri
-            if self.rdf_type and not list(self.db.triples(
-                        (self.resUri, RDF.type, self.rdf_type))):
+            if self.rdf_type \
+                and not list(self.db.triples(
+                    (self.resUri, RDF.type, self.rdf_type))):
                 self.db.add((self.resUri, RDF.type, self.rdf_type))
 
         elif isinstance(resUri, rdfSubject):  # use the resUri of the subject
@@ -74,7 +74,7 @@ class rdfSubject(object):
 
         else:
             raise AttributeError("cannot construct rdfSubject from %s" % (
-                                        str(resUri)))
+                str(resUri)))
 
         if kwargs:
             self._set_with_dict(kwargs)
@@ -93,9 +93,9 @@ class rdfSubject(object):
             if key in kls.__dict__:
                 return kls.__dict__[key]
         raise AttributeError(
-                "descriptor %s not found for class %s" % (key, cls))
+            "descriptor %s not found for class %s" % (key, cls))
 
-    #short term hack.  Need to go to a sqlalchemy 0.4 style query method
+    # short term hack.  Need to go to a sqlalchemy 0.4 style query method
     # obj.query.get_by should map to obj.get_by  ..same for fetch_by
     @classmethod
     def query(cls):
@@ -117,7 +117,7 @@ class rdfSubject(object):
             that is of type owl:InverseFunctional"""
         if len(kwargs) != 1:
             raise ValueError(
-                "get_by wanted exactly 1 but got  %i args\n" + \
+                "get_by wanted exactly 1 but got  %i args\n" +
                 "Maybe you wanted filter_by" % (len(kwargs)))
         key, value = kwargs.items()[0]
         if isinstance(value, (URIRef, BNode, Literal)):
@@ -189,7 +189,7 @@ class rdfSubject(object):
         return hash("ranD0Mi$h_" + self.n3())
 
     def __cmp__(self, other):
-        if other == None:
+        if other is None:
             return False
         else:
             return cmp(self.n3(), other.n3())
@@ -214,8 +214,8 @@ class rdfSubject(object):
         log.debug("Deleting with __delitem__ %s for %s" % (pred, self))
         for s, p, o in self.db.triples((self.resUri, pred, None)):
             self.db.remove((s, p, o))
-            #finally if the object in the triple was a bnode
-            #cascade delete the thing it referenced
+            # finally if the object in the triple was a bnode
+            # cascade delete the thing it referenced
             # ?? FIXME Do we really want to cascade if it's an rdfSubject??
             if isinstance(o, (BNode, rdfSubject)):
                 rdfSubject(o)._remove(db=self.db, cascade='bnode')
@@ -232,8 +232,11 @@ class rdfSubject(object):
             descriptor = self.__class__._getdescriptor(key)
             descriptor.__set__(self, value)
 
-    def _remove(self, db=None, cascade='bnode', bnodeCheck=True, objectCascade=False):
-        """remove all triples where this rdfSubject is the subject of the triple
+    def _remove(
+            self, db=None, cascade='bnode',
+            bnodeCheck=True, objectCascade=False):
+        """
+        Remove all triples where this rdfSubject is the subject of the triple
 
         :param db: limit the remove operation to this graph
         :param cascade: must be one of:
@@ -261,16 +264,15 @@ class rdfSubject(object):
 
         # we cannot delete a bnode if it is still referenced,
         # i.e. if it is the o of a s,p,o
-        if bnodeCheck:
-            if isinstance(noderef, BNode):
-                for s, p, o in db.triples((None, None, noderef)):
-                    raise RDFAlchemyError(
-                        "Cannot delete a bnode %s because %s still references it" % (
-                                noderef.n3(), s.n3()))
+        if bnodeCheck and isinstance(noderef, BNode):
+            for s, p, o in db.triples((None, None, noderef)):
+                raise RDFAlchemyError(
+                    "Cannot delete BNode %s because %s still references it" % (
+                    noderef.n3(), s.n3()))
 
         # determine an appropriate test for cascade decisions
         if cascade == 'bnode':
-            #we cannot delete a bnode if there are still references to it
+            # we cannot delete a bnode if there are still references to it
             def test(node):
                 if isinstance(node, (URIRef, Literal)):
                     return False

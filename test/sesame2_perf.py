@@ -22,7 +22,7 @@ q2 = "select ?o where {?s ?p ?o} limit 10000"
 def mtester(method, small, all):
     start = datetime.now()
     i = 0
-    for x in  g.query(q, resultMethod=method):
+    for x in g.query(q, resultMethod=method):
         i = i + 1
         if (i % small) == 0:
             print("c %s %s" % (i, datetime.now() - start))
@@ -34,22 +34,22 @@ g = SesameGraph(url1)
 q = q1
 # print "testing\n  url: %s\n  query: %s\n" % (url1,q)
 # print "\n  method: %s" % ('brtr')
-# tester('brtr',100,1000) 
+# tester('brtr',100,1000)
 
 print("\n  method: %s" % ('xml'))
 mtester('xml', 100, 1000)
 
 # print "\n  method: %s" % ('json')
-# tester('json',100,1000) 
+# tester('json',100,1000)
 
 g = SesameGraph(url2)
 q = q2
 # print "testing\n  url: %s\n  query: %s\n" % (url2,q)
 # print "\n  method: %s" % ('brtr')
-# tester('brtr',1000,5000) 
+# tester('brtr',1000,5000)
 
 print("\n  method: %s" % ('xml'))
-mtester('xml', 1000, 5000) 
+mtester('xml', 1000, 5000)
 
 # print "\n  method: %s" % ('json')
-# tester('json',1000,5000) 
+# tester('json',1000,5000)

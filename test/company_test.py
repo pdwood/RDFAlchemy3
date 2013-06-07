@@ -31,7 +31,8 @@ ov:C_US_IBM a ov:Company;
      ov:ysector "Technology";
      vcard:tel "914-499-1900";
      vcard:url "http://www.ibm.com"^^<http://www.w3.org/2001/XMLSchema#anyURI>;
-     ov:stockDescription "International Business Machines Corporation (IBM) operates as an information technology (IT) company worldwide. It has .....".
+     ov:stockDescription "International Business Machines Corporation (IBM) \
+operates as an information technology (IT) company worldwide. It has .....".
 """
 
 OV = Namespace('http://owl.openvest.org/2005/10/Portfolio#')
@@ -73,8 +74,9 @@ print('')
 
 def test_2():
     ## Add a descriptor on the fly
-    Company.stockDescription = rdfSingle(OV.stockDescription, 'stockDescription')
-    assert  c.companyName == c[OV.companyName]
+    Company.stockDescription = rdfSingle(
+        OV.stockDescription, 'stockDescription')
+    assert c.companyName == c[OV.companyName]
 
 
 ## add another descriptor on the fly

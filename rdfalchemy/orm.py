@@ -1,6 +1,5 @@
 # encoding: utf-8
 """
-==========================================================================================
 orm.py
 
 Created by Philip Cooper on 2007-11-23.
@@ -38,14 +37,19 @@ def mapper(*classes):
     class_dict = dict([(str(cl.rdf_type), cl) for cl in classes])
     for cl in classes:  # for each class
         for v in cl.__dict__.values():  # for each desciptor
-            if isinstance(v, rdfAbstract) and v.range_type:  # if its a descriptor with a range
+            # if its a descriptor with a range
+            if isinstance(v, rdfAbstract) and v.range_type:
                 try:
                     v._mappedClass = class_dict[str(v.range_type)]
                 except KeyError:
-                    log.warn("No Class Found\nFailed to map %s range of %s" % (v, v.range_type))
+                    log.warn("No Class Found\nFailed to map %s range of %s" % (
+                        v, v.range_type))
     return class_dict
 
 #def mapBase(baseclass):
-#    """This maps all classes below baseclass as in mapper()
-#    AND puts the dict of {rdf_type: mapped_class}  in an baseclass._type2class attribute"""
+#    """
+#    This maps all classes below baseclass as in mapper()
+#    AND puts the dict of {rdf_type: mapped_class}  in
+#    an baseclass._type2class attribute
+#    """
 #    baseclass._type2class = mapper(*allsub(baseclass))

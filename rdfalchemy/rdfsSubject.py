@@ -1,6 +1,5 @@
 # encoding: utf-8
 """
-====================================================================================
 rdfsSubject.py
 
 rdfsSubject is similar to rdfsSubject but includes more
@@ -19,14 +18,14 @@ from rdfalchemy import (
     Namespace,
     BNode,
     URIRef
-    )
-from rdfalchemy.py3compat import PY3
+)
+from rdflib.py3compat import PY3
 from rdflib.term import Identifier
 from descriptors import (
     rdfSingle,
     rdfMultiple,
     owlTransitive
-    )
+)
 from orm import mapper, allsub
 
 import logging
@@ -52,16 +51,20 @@ class rdfsSubject(rdfSubject, Identifier):
     _weakrefs = WeakValueDictionary()
 
     def __new__(cls, resUri=None, schemaGraph=None, *args, **kwargs):
-        if not resUri or isinstance(resUri, BNode) or issubclass(cls, BNode):  # create a bnode
+        #  create a bnode
+        if not resUri or isinstance(resUri, BNode) or issubclass(cls, BNode):
             obj = BNode.__new__(cls, resUri)
             obj._nodetype = BNode
-        elif isinstance(resUri, URIRef) or issubclass(cls, URIRef):  # user the identifier passed in
+        # user the identifier passed in
+        elif isinstance(resUri, URIRef) or issubclass(cls, URIRef):
             obj = URIRef.__new__(cls, resUri)
             obj._nodetype = URIRef
-        elif isinstance(resUri, rdfSubject):      # use the resUri of the subject passed in
+        # use the resUri of the subject passed in
+        elif isinstance(resUri, rdfSubject):
             obj = type(resUri.resUri).__new__(cls, resUri.resUri)
             obj._nodetype = type(resUri.resUri)
-        elif isinstance(resUri, (str, unicode)):  # create one from a <uri> or _:bnode string
+        # create one from a <uri> or _:bnode string
+        elif isinstance(resUri, (str, unicode)):
             if resUri[0] == "<" and resUri[-1] == ">":
                 obj = URIRef.__new__(cls, resUri[1:-1])
                 obj._nodetype = URIRef
@@ -69,15 +72,18 @@ class rdfsSubject(rdfSubject, Identifier):
                 obj = BNode.__new__(cls, resUri[2:])
                 obj._nodetype = BNode
         else:
-            raise AttributeError("cannot construct rdfSubject from %s" % (str(resUri)))
+            raise AttributeError(
+                "cannot construct rdfSubject from %s" % (str(resUri)))
 
-        # At this point we have an obj to return...but we might want to look deeper
-        # if there is an RDF:type entry on the Graph, find the mapped subclass and return
-        # an object of that new type
+        # At this point we have an obj to return...but we might want to look
+        # deeper if there is an RDF:type entry on the Graph, find the mapped
+        # subclass and return an object of that new type
         if resUri:
             rdf_type = obj[RDF.type]
             if rdf_type:
-                class_dict = dict([(str(cl.rdf_type), cl) for cl in allsub(cls) if cl.rdf_type])
+                class_dict = dict(
+                    [(str(cl.rdf_type), cl)
+                        for cl in allsub(cls) if cl.rdf_type])
                 subclass = class_dict.get(str(rdf_type.resUri), cls)
             else:
                 subclass = cls
@@ -92,7 +98,7 @@ class rdfsSubject(rdfSubject, Identifier):
         log.debug("looking for weakref %s found %s" % (md5id, newobj))
         if newobj:
             return newobj
-        newobj = super(rdfSubject, obj).__new__(subclass, obj.resUri)  # , **kwargs)
+        newobj = super(rdfSubject, obj).__new__(subclass, obj.resUri)
         log.debug("add a weakref %s", newobj)
         newobj._nodetype = obj._nodetype
         rdfsSubject._weakrefs[newobj.md5_term_hash()] = newobj
@@ -133,10 +139,13 @@ class rdfsSubject(rdfSubject, Identifier):
                     yield i
                     beenthere.add(i)
 
-        # not done yet, for all db subclasses that I have not processed already...get them too
+        # not done yet, for all db subclasses that I have not processed
+        # already...get them too
         dbSubClasses = rdfsClass(cls.rdf_type).transitive_subClasses
-        moreSubClasses = [dbsub.resUri for dbsub in dbSubClasses
-                                if dbsub.resUri not in [pysub.rdf_type for pysub in pySubClasses]]
+        moreSubClasses = [
+            dbsub.resUri for dbsub in dbSubClasses
+            if dbsub.resUri not in [
+                pysub.rdf_type for pysub in pySubClasses]]
         for sub in moreSubClasses:
             for i in cls.db.subjects(RDF.type, sub):
                 if '' and not i in beenthere:
@@ -155,12 +164,17 @@ class rdfsClass(rdfsSubject):
 
     @property
     def transitive_subClassOf(self):
-        return [rdfsClass(s)
-            for s in self.db.transitive_objects(self.resUri, RDFS.subClassOf)]
+        return [
+            rdfsClass(s)
+            for s in self.db.transitive_objects(
+                self.resUri, RDFS.subClassOf)]
 
     @property
     def transitive_subClasses(self):
-        return [rdfsClass(s) for s in self.db.transitive_subjects(RDFS.subClassOf, self.resUri)]
+        return [
+            rdfsClass(s)
+            for s in self.db.transitive_subjects(
+                RDFS.subClassOf, self.resUri)]
 
     @property
     def properties(self):
@@ -171,14 +185,18 @@ class rdfsClass(rdfsSubject):
         return [x for x in rdfsProperty.ClassInstances() if x.domain == self]
 
     def _emit_rdfSubject(self, visitedNS={}, visitedClass=set([])):
-        """Procude the text that might be used for a .py file
-        TODO: This code should probably move into the commands module since that's
-        the only place it's used"""
+        """
+        Produce the text that might be used for a .py file
+        TODO: This code should probably move into the commands module since
+        that's the only place it's used
+        """
         ns, loc = self._splitname()
         try:
             prefix, qloc = self.db.qname(self.resUri).split(':')
         except:
-            raise Exception("don't know how to handle a qname like %s" % self.db.qname(self.resUri))
+            raise Exception(
+                "don't know how to handle a qname like %s" % (
+                    self.db.qname(self.resUri)))
         prefix = prefix.upper()
 
         if not visitedNS:
@@ -190,7 +208,8 @@ from rdfalchemy.orm import mapper
 """
             for k, v in self.db.namespaces():
                 visitedNS[str(v)] = k.upper()
-                src += '%s = Namespace("%s")\n' % (k.upper().replace('-', '_'), v)
+                src += '%s = Namespace("%s")\n' % (
+                    k.upper().replace('-', '_'), v)
         else:
             src = ""
 
@@ -210,12 +229,13 @@ from rdfalchemy.orm import mapper
             pns, ploc = p._splitname()
             ppy = '%s["%s"]' % (visitedNS[pns], ploc)
             try:
-                assert  str(p.range[RDF.type].resUri).endswith('Class')  # rdfs.Class and owl.Class
+                assert str(p.range[RDF.type].resUri).endswith('Class')
                 rns, rloc = rdfsSubject(p.range)._splitname()
                 range_type = ', range_type = %s["%s"]' % (visitedNS[rns], rloc)
             except Exception:
                 range_type = ''
-            src += '\t%s = rdfMultiple(%s%s)\n' % (ploc.replace('-', '_'), ppy, range_type)
+            src += '\t%s = rdfMultiple(%s%s)\n' % (
+                ploc.replace('-', '_'), ppy, range_type)
 
         # Just want this once at the end
         src.replace("mapper()\n", "")
@@ -239,11 +259,16 @@ class owlClass(rdfsClass):
     *Some* inferencing is implied
     Bleading edge: be careful"""
     rdf_type = OWL["Class"]
-    disjointWith = rdfMultiple(OWL["disjointWith"], range_type=OWL["Class"])
-    equivalentClass = rdfMultiple(OWL["equivalentClass"], range_type=OWL["Class"])
-    intersectionOf = rdfMultiple(OWL["intersectionOf"])
-    unionOf = rdfMultiple(OWL["unionOf"])
-    complementOf = rdfMultiple(OWL["complementOf"], range_type=OWL["Class"])
+    disjointWith = rdfMultiple(
+        OWL["disjointWith"], range_type=OWL["Class"])
+    equivalentClass = rdfMultiple(
+        OWL["equivalentClass"], range_type=OWL["Class"])
+    intersectionOf = rdfMultiple(
+        OWL["intersectionOf"])
+    unionOf = rdfMultiple(
+        OWL["unionOf"])
+    complementOf = rdfMultiple(
+        OWL["complementOf"], range_type=OWL["Class"])
 
 
 ########################################

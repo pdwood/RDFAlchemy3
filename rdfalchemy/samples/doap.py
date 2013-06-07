@@ -19,8 +19,8 @@ class Project(rdfSubject):
     shortdesc = rdfMultiple(DOAP.shortdesc)
     releases = rdfMultiple(DOAP.release, range_type=DOAP.Version)
     language = rdfSingle(
-            DOAP['programming-language'])  # because of the hyphen we can't use
-                                           # DOAP.programming-language
+        DOAP['programming-language'])  # because of the hyphen we can't use
+                                       # DOAP.programming-language
     maintainer = rdfSingle(DOAP.maintainer, range_type=FOAF.Person)
 
 

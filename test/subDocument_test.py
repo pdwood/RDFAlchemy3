@@ -2,7 +2,7 @@ from rdfalchemy import (
     Namespace,
     rdfSingle,
     rdfMultiple
-    )
+)
 from rdfalchemy.rdfsSubject import rdfsSubject
 
 DC = Namespace('http://purl.org/dc/terms/')
@@ -34,7 +34,7 @@ y = Document(title="Another Title")
 
 def len_test():
     assert len(list(Document.ClassInstances())) == 2,\
-                     "wanted 2 ... one book and one document"
+        "wanted 2 ... one book and one document"
 
 for document in Document.ClassInstances():
     print(document.title)

@@ -1,21 +1,26 @@
 # encoding: utf-8
-from rdfalchemy import *
+import rdfalchemy
 from rdfalchemy.descriptors import rdfLocale
-from rdfalchemy.samples.doap import *
+from rdfalchemy.samples.doap import DOAP, Project
 import platform
 
 if platform.system() == 'Java':
     from nose import SkipTest
     raise SkipTest("Skipping, Java - Python unicode conflict")
 
-rdfSubject.db.parse('rdfalchemy/samples/schema/doap.rdf')
+rdfalchemy.rdfSubject.db.parse('rdfalchemy/samples/schema/doap.rdf')
 p = Project(DOAP.SVNRepository)
 
-Project.ls = rdfSingle(RDFS.label, cacheName='ls')
-Project.lm = rdfMultiple(RDFS.label, cacheName='lm')
-Project.len = rdfLocale(RDFS.label, 'en')
-Project.les = rdfLocale(RDFS.label, 'es')
-Project.lfr = rdfLocale(RDFS.label, 'fr')
+Project.ls = rdfalchemy.rdfSingle(
+    rdfalchemy.RDFS.label, cacheName='ls')
+Project.lm = rdfalchemy.rdfMultiple(
+    rdfalchemy.RDFS.label, cacheName='lm')
+Project.len = rdfLocale(
+    rdfalchemy.RDFS.label, 'en')
+Project.les = rdfLocale(
+    rdfalchemy.RDFS.label, 'es')
+Project.lfr = rdfLocale(
+    rdfalchemy.RDFS.label, 'fr')
 
 
 def en_es_test():

@@ -1,5 +1,5 @@
 """
-====================================================================================
+
 """
 import os
 import re
@@ -18,7 +18,8 @@ def create_engine(url='', identifier="", create=False):
       - create_engine('sleepycat://~/working/rdf_db')
       - create_engine('zodb:///var/rdflib/Data.fs')
       - create_engine('zodb://localhost:8672')
-      - create_engine('sesame://www.example.com:8080/openrdf-sesame/repositories/Test')
+      - create_engine(
+            'sesame://www.example.com:8080/openrdf-sesame/repositories/Test')
       - create_engine('sparql://www.example.com:2020/sparql')
 
     for zodb:
@@ -32,32 +33,21 @@ def create_engine(url='', identifier="", create=False):
         from rdflib import ConjunctiveGraph
         db = ConjunctiveGraph('IOMemory')
 
-    elif url.lower().startswith('mysql://'):
-        from rdflib import ConjunctiveGraph
-        db = ConjunctiveGraph('MySQL', identifier)
-        schema, opts = _parse_rfc1738_args(url)
-        openstr = 'db=%(database)s,host=%(host)s,user=%(username)s' % opts
-        if opts.get('password'):
-            openstr += ',password=%(password)s' % opts
-        if opts.get('port'):
-            openstr += ',port=%(port)s' % opts
-        db.open(openstr)
-
     elif url.lower().startswith('sleepycat://'):
         from rdflib import ConjunctiveGraph
         db = ConjunctiveGraph('Sleepycat', identifier=identifier)
         openstr = os.path.abspath(os.path.expanduser(url[12:]))
         db.open(openstr, create=create)
 
-    elif url.lower().startswith('sqlite://'):
+    elif url.lower().startswith('sqlalchemy://'):
         from rdflib import ConjunctiveGraph
-        db = ConjunctiveGraph('SQLite', identifier=identifier)
+        db = ConjunctiveGraph('SQLAlchemy', identifier=identifier)
         openstr = os.path.abspath(os.path.expanduser(url[9:]))
         db.open(openstr, create=create)
 
     elif url.lower().startswith('zodb://'):
         import ZODB
-        import transaction
+        # import transaction
         from rdflib import ConjunctiveGraph
         db = ConjunctiveGraph('ZODB')
         if url.endswith('.fs'):
@@ -130,11 +120,14 @@ def _parse_rfc1738_args(name):
 
     m = pattern.match(name)
     if m is not None:
-        (name, username, password, host, port, database) = m.group(1, 2, 3, 4, 5, 6)
+        (name, username, password, host, port, database) = m.group(
+            1, 2, 3, 4, 5, 6)
         if database is not None:
             tokens = database.split(r"?", 2)
             database = tokens[0]
-            query = (len(tokens) > 1 and dict(cgi.parse_qsl(tokens[1])) or None)
+            query = (
+                len(tokens) > 1 and dict(
+                    cgi.parse_qsl(tokens[1])) or None)
             if query is not None:
                 query = dict([(k.encode('ascii'), query[k]) for k in query])
         else:

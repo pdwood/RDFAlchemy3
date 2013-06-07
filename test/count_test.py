@@ -1,6 +1,6 @@
-from rdfalchemy import *
-from rdfalchemy.samples.doap import *
-from rdfalchemy.samples.foaf import *
+import rdfalchemy
+from rdfalchemy.samples.doap import FOAF
+from rdfalchemy.samples.foaf import Person
 from rdflib import ConjunctiveGraph
 
 import logging
@@ -19,9 +19,9 @@ def test_start():
     assert len(Person.db) == 2
 
 
-Person.m = rdfMultiple(FOAF.multi)
-Person.l = rdfList(FOAF.list)
-Person.c = rdfContainer(FOAF.seq)
+Person.m = rdfalchemy.rdfMultiple(FOAF.multi)
+Person.l = rdfalchemy.rdfList(FOAF.list)
+Person.c = rdfalchemy.rdfContainer(FOAF.seq)
 
 
 def test_multi():

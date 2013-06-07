@@ -1,6 +1,5 @@
 # encoding: utf-8
 """
-==================================================================================
 Literal.py
 
 Created by Philip Cooper on 2008-02-09.
@@ -9,7 +8,7 @@ Copyright (c) 2008 Openvest. All rights reserved.
 from rdflib import (
     Namespace,
     Literal
-    )
+)
 from rdflib.term import bind as bindLiteral
 
 import re

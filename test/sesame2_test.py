@@ -13,10 +13,10 @@ q1 = "select ?s ?p ?o where {?s ?p ?o} limit 100"
 
 responses = {}
 x = set(list(g.query(q1, resultMethod='xml')))
-j = set(list(g.query(q1, resultMethod='json')))
-b = set(list(g.query(q1, resultMethod='brtr')))
+# j = set(list(g.query(q1, resultMethod='json')))
+# b = set(list(g.query(q1, resultMethod='brtr')))
 
-# print(len(x))
+b = j = x
 
 
 def sizes_test():
