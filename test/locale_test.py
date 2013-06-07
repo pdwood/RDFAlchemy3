@@ -1,5 +1,6 @@
 # encoding: utf-8
 import rdfalchemy
+from rdfalchemy.rdfSubject import rdfSubject
 from rdfalchemy.descriptors import rdfLocale
 from rdfalchemy.samples.doap import DOAP, Project
 import platform
@@ -8,7 +9,7 @@ if platform.system() == 'Java':
     from nose import SkipTest
     raise SkipTest("Skipping, Java - Python unicode conflict")
 
-rdfalchemy.rdfSubject.db.parse('rdfalchemy/samples/schema/doap.rdf')
+rdfSubject.db.parse('rdfalchemy/samples/schema/doap.rdf')
 p = Project(DOAP.SVNRepository)
 
 Project.ls = rdfalchemy.rdfSingle(
