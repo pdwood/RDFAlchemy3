@@ -72,9 +72,10 @@ setup(
     author='Philip Cooper',
     author_email='philip.cooper@openvest.com',
     maintainer='Graham Higgins',
-    author_email='gjh@bel-epa.com',
+    maintainer_email='gjh@bel-epa.com',
     url="http://www.openvest.com/trac/wiki/RDFAlchemy",
-    download_url="https://github.com/gjhigins/RDFAlchemy-%s.tar.gz" % __version__,
+    download_url="https://github.com/gjhiggins/RDFAlchemy-%s.tar.gz" % (
+        __version__),
     install_requires=["rdflib>=4.0.1"],
     packages=['rdfalchemy',
               'rdfalchemy/engine',
