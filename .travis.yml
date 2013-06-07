@@ -18,4 +18,4 @@ script:
     # Must cd somewhere else ("build/src" in this instance) so Python3 doesn't
     # get confused and run the Python 2 code from the current directory
     # instead of the installed 2to3 translated version.
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then nosetests --where=build/src; fi
+    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' ]]; then SESAME2_URL="http://bel-epa.com:8080/openrdf-workbench/repositories/otter/query" nosetests --where=build/src; fi
