@@ -9,7 +9,7 @@ from rdflib.plugins.serializers.nt import _xmlcharref_encode
 
 from rdflib.plugins.parsers.ntriples import NTriplesParser
 
-from urllib2 import urlopen, Request, HTTPError
+from urllib2 import urlopen, Request, HTTPError, quote
 from urllib import urlencode  # , quote_plus
 
 import os
@@ -92,7 +92,7 @@ class SesameGraph(SPARQLGraph):
         query = {}
         url = self.url + '/statements'
         if s:
-            query['subj'] = s.n3()
+            query['subj'] = s.n3().encode('utf8')
         if p:
             query['pred'] = p.n3()
         if o:
@@ -114,8 +114,13 @@ class SesameGraph(SPARQLGraph):
         if ctx:
             url = url + "?" + urlencode(dict(context=ctx))
         req = Request(url)
-        req.data = "%s %s %s .\n" % (
-            s.n3(), p.n3(), _xmlcharref_encode(o.n3()))
+        # req.data = "%s %s %s .\n" % (
+        #     s.n3(), p.n3(), _xmlcharref_encode(o.n3()))
+        req.data = "<%s> %s %s .\n" % (
+            _xmlcharref_encode(unicode(s)),
+            p.n3(),
+            _xmlcharref_encode(o.n3()))
+
         req.add_header('Content-Type', 'text/rdf+n3')
         try:
             result = urlopen(req).read()

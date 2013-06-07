@@ -14,8 +14,8 @@ def create_engine(url='', identifier="", create=False):
     :param url: a string of the url
     :param identifier: URIRef of the default context for writing e.g.:
 
-      - create_engine('mysql://myname@localhost/rdflibdb')
       - create_engine('sleepycat://~/working/rdf_db')
+      - create_engine('kyotocabinet://~/working/rdf_db')
       - create_engine('zodb:///var/rdflib/Data.fs')
       - create_engine('zodb://localhost:8672')
       - create_engine(
@@ -28,6 +28,16 @@ def create_engine(url='', identifier="", create=False):
     indicate FileStorage, otherwise ClientStoreage is assumed which requires
     a ZEO Server to be running
 
+    for sqlalchemy, prepend the string "sqlachemy+" to a valid SQLAlchemy dburi
+    form:
+
+      - create_engine('sqlalchemy+sqlite://')
+      - create_engine('sqlalchemy+sqlite:////absolute/path/to/foo.db')
+      - create_engine('sqlalchemy+mysql://myname@localhost/rdflibdb')
+      - create_engine('sqlalchemy+postgresql://myname@localhost/rdflibdb')
+
+    etc.
+
     """
     if url == '' or url.startswith('IOMemory'):
         from rdflib import ConjunctiveGraph
@@ -39,11 +49,16 @@ def create_engine(url='', identifier="", create=False):
         openstr = os.path.abspath(os.path.expanduser(url[12:]))
         db.open(openstr, create=create)
 
-    elif url.lower().startswith('sqlalchemy://'):
+    elif url.lower().startswith('kyotocabinet://'):
+        from rdflib import ConjunctiveGraph
+        db = ConjunctiveGraph('Kyotocabinet', identifier=identifier)
+        openstr = os.path.abspath(os.path.expanduser(url[15:]))
+        db.open(openstr, create=create)
+
+    elif url.lower().startswith('sqlalchemy+'):
         from rdflib import ConjunctiveGraph
         db = ConjunctiveGraph('SQLAlchemy', identifier=identifier)
-        openstr = os.path.abspath(os.path.expanduser(url[9:]))
-        db.open(openstr, create=create)
+        db.open(url[11:], create=create)
 
     elif url.lower().startswith('zodb://'):
         import ZODB
