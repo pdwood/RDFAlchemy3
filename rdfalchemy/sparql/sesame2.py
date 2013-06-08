@@ -9,8 +9,8 @@ from rdflib.plugins.serializers.nt import _xmlcharref_encode
 
 from rdflib.plugins.parsers.ntriples import NTriplesParser
 
-from urllib2 import urlopen, Request, HTTPError, quote
-from urllib import urlencode  # , quote_plus
+from urllib2 import urlopen, Request, HTTPError
+from urllib import urlencode
 
 import os
 # import re

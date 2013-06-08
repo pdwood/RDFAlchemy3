@@ -80,7 +80,7 @@ def main(url=None):
             query, resultMethod=opts.format, rawResults=True)
         print >>output, result.read()
 
-    except Usage as err:
+    except Usage, err:
         print >> sys.stderr, sys.argv[0].split("/")[-1] + ": " + str(err.msg)
         print >> sys.stderr, "\t for help use --help"
         return 2
