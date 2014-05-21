@@ -9,12 +9,12 @@ python:
     - pypy
 install:
     - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install --use-mirrors simplejson; fi
-    # - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --upgrade "https://bitbucket.org/gjhiggins/isodate/downloads/isodate-0.4.8.tar.gz"; pip install --use-mirrors --default-timeout 60 "elementtree"; fi
+    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '3' || $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --use-mirrors --default-timeout 60 "elementtree"; fi
     - pip install -r requirements.txt --use-mirrors
     - python setup.py build
 
 before_script:
-    - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then flake8 rdfalchemy; fi
+    # - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' ]]; then flake8 rdfalchemy; fi
 
 script:
     - if [[ ${TRAVIS_PYTHON_VERSION%%.*} == '2' || $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then SESAME2_URL="http://bel-epa.com:8080/openrdf-workbench/repositories/otter/query" nosetests; fi
