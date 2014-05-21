@@ -36,7 +36,7 @@ c = Company.get_by(symbol='IBM')
 ## this will enable us to see that the reads are cached
 
 log = logging.getLogger('rdfAlchemy')
-## comment out to quite debug messages
+## comment out to quiet debug messages
 log.setLevel(logging.DEBUG)
 
 ## list Companies
