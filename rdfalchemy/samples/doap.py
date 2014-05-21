@@ -1,3 +1,4 @@
+import os
 from rdfalchemy import rdfSingle, rdfMultiple
 from rdfalchemy.rdfSubject import rdfSubject
 from rdfalchemy.orm import mapper
@@ -50,10 +51,15 @@ def show_project(p):
 
 
 if __name__ == '__main__':
-    loads = ["http://doapspace.org/doap/sf/accs.rdf",
-             "http://doapspace.org/doap/sf/nut"]
+    #loads = ["http://doapspace.org/doap/sf/accs.rdf",
+    #         "http://doapspace.org/doap/sf/nut"]
+    loads = ["https://raw.githubusercontent.com/edumbill/doap/master/examples/doap-doap.rdf",
+             "https://pypi.python.org/pypi?:action=doap&name=RDFAlchemy&version=0.2.9"]
     for url in loads:
         rdfSubject.db.load(url)
+
+    rdfSubject.db.load(os.path.join(os.path.split(__file__)[:-1])[0] + '/data/rdflib_doap.rdf')
+
 
     for p in Project.ClassInstances():
         show_project(p)
