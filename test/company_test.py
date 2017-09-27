@@ -97,6 +97,16 @@ def test_3():
     assert not c.industry
 
 
+def test_set_none_value():
+    '''Setting None should be the equivalent of deleting an attribute.'''
+    c = Company.get_by(symbol='IBM')
+    assert c.companyName == "International Business Machines Corp."
+    c.companyName = None
+    assert c.companyName != "International Business Machines Corp."
+    c = Company.get_by(symbol='IBM')
+    assert not c.companyName
+
+
 def test_creating():
     c2 = Company(OV.A)
     c3 = Company('<http://owl.openvest.org/2005/10/Portfolio#A>')

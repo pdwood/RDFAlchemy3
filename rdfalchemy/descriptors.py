@@ -167,9 +167,12 @@ class rdfSingle(rdfAbstract):
         if isinstance(value, (list, tuple, set)):
             raise AttributeError(
                 "to set an rdfSingle you must pass in a single value")
-        obj.__dict__[self.name] = value
-        o = value2object(value)
-        obj.db.set((obj.resUri, self.pred, o))
+        if value is None:
+            self.__delete__(obj)
+        else:
+            obj.__dict__[self.name] = value
+            o = value2object(value)
+            obj.db.set((obj.resUri, self.pred, o))
 
 
 class rdfMultiple(rdfAbstract):
@@ -210,6 +213,9 @@ class rdfMultiple(rdfAbstract):
             raise AttributeError(
                 "to set a rdfMultiple you must pass in " +
                 "a list (it can be a list of one)")
+        if newvals is None:
+            self.__delete__(obj)
+            return
         try:
             oldvals = obj.__dict__[self.name]
         except KeyError:
