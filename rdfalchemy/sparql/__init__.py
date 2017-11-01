@@ -12,7 +12,6 @@ from rdfalchemy.sparql.parsers import (
 )
 
 from rdflib import ConjunctiveGraph
-from rdflib.py3compat import format_doctest_out
 # from rdflib.plugins.parsers.ntriples import NTriplesParser
 
 from urllib2 import urlopen, Request, HTTPError
@@ -349,17 +348,16 @@ class SPARQLGraph(object):
             raise HTTPError(e)
 
     @classmethod
-    @format_doctest_out
     def _processInitBindings(cls, query, initBindings):
         """
         _processInitBindings will convert a query by replacing the Variables
 
         >>> SPARQLGraph._processInitBindings(
         ...     'SELECT ?x { ?x ?y ?z }', {'z' : 'hi'})
-        %(u)s'SELECT ?x { ?x ?y "hi" }'
+        u'SELECT ?x { ?x ?y "hi" }'
         >>> SPARQLGraph._processInitBindings(
         ...     'SELECT ?x { ?x <http://example/?z=1> ?z }', {'z' : 'hi'})
-        %(u)s'SELECT ?x { ?x <http://example/?z=1> "hi" }'
+        u'SELECT ?x { ?x <http://example/?z=1> "hi" }'
 
         :param query: the query to process
         :param initBindings: a dict of variable to value"""

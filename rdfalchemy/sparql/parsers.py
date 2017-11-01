@@ -9,7 +9,10 @@ from rdfalchemy.exceptions import (
     ParseError
 )
 
-from rdflib.py3compat import b
+try:
+    from rdflib.py3compat import b
+except:
+    from six import b
 
 try:
     import json

@@ -19,7 +19,10 @@ from rdfalchemy import (
     BNode,
     URIRef
 )
-from rdflib.py3compat import PY3
+try:
+    from rdflib.py3compat import PY3
+except:
+    from six import PY3
 from rdflib.term import Identifier
 from descriptors import (
     rdfSingle,
@@ -93,7 +96,7 @@ class rdfsSubject(rdfSubject, Identifier):
         # improve this do do some kind of hash with classname??
         # this uses _weakrefs to allow us to return an existing object
         # rather than copies
-        md5id = obj.md5_term_hash()
+        md5id = obj.n3()
         newobj = rdfsSubject._weakrefs.get(md5id, None)
         log.debug("looking for weakref %s found %s" % (md5id, newobj))
         if newobj:
@@ -101,7 +104,7 @@ class rdfsSubject(rdfSubject, Identifier):
         newobj = super(rdfSubject, obj).__new__(subclass, obj.resUri)
         log.debug("add a weakref %s", newobj)
         newobj._nodetype = obj._nodetype
-        rdfsSubject._weakrefs[newobj.md5_term_hash()] = newobj
+        rdfsSubject._weakrefs[newobj.n3()] = newobj
         return newobj
 
     def __init__(self, resUri=None, **kwargs):
