@@ -331,7 +331,3 @@ class rdfSubject(object):
             print "%20s = %s" % (db.qname(p), str(o))
         print " "
 
-    def md5_term_hash(self):
-        """Not sure what good this method is but it's defined for
-        rdflib.Identifiers so it's here for now"""
-        return self.resUri.md5_term_hash()

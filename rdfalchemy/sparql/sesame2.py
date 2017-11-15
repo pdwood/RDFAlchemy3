@@ -5,7 +5,7 @@ from rdfalchemy.sparql.parsers import (
     _XMLSPARQLHandler,
     _JSONSPARQLHandler
 )
-from rdflib.plugins.serializers.nt import _xmlcharref_encode
+from rdflib.plugins.serializers.nt import _quoteLiteral
 
 from rdflib.plugins.parsers.ntriples import NTriplesParser
 
@@ -96,7 +96,7 @@ class SesameGraph(SPARQLGraph):
         if p:
             query['pred'] = p.n3()
         if o:
-            query['obj'] = _xmlcharref_encode(o.n3())
+            query['obj'] = _quoteLiteral(o.n3())
             # o.n3()
             # quote_plus(o.n3().encode("utf-8"))
         if context:
