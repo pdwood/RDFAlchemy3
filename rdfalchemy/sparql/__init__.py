@@ -338,7 +338,7 @@ class SPARQLGraph(object):
             return self.parsers[resultMethod](url)
         except LookupError:
             raise ValueError("Invalid resultMethod: %s" % resultMethod)
-        except HTTPError, e:
+        except HTTPError as e:
             if e.code == 400:  # and e.msg.startswith('Parse_error'):
                 errmsg = e.fp.read()
                 submsg = re.search(
