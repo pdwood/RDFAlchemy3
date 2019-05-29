@@ -24,12 +24,12 @@ try:
 except:
     from six import PY3
 from rdflib.term import Identifier
-from descriptors import (
+from .descriptors import(
     rdfSingle,
     rdfMultiple,
     owlTransitive
 )
-from orm import mapper, allsub
+from .orm import mapper, allsub
 
 import logging
 log = logging.getLogger(__name__)

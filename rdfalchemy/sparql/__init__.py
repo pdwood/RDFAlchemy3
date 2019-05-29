@@ -14,8 +14,9 @@ from rdfalchemy.sparql.parsers import (
 from rdflib import ConjunctiveGraph
 # from rdflib.plugins.parsers.ntriples import NTriplesParser
 
-from urllib2 import urlopen, Request, HTTPError
-from urllib import urlencode
+from urllib.request import urlopen, Request
+from urllib.error import HTTPError
+from urllib.parse import urlencode
 
 import re
 import logging

@@ -9,10 +9,7 @@ from rdfalchemy.descriptors import (
     rdfContainer,
     owlTransitive
 )
-from engine import (
-    create_engine,
-    engine_from_config
-)
+from .engine import create_engine, engine_from_config
 
 # if users don't use logging they could see a
 # a confusing "No Handler could be found" warning
