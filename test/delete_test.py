@@ -30,10 +30,10 @@ def test_addBNodeKnowsL():
     p3 = Person(last="Cooper", first="Matt")
     assert len(Person.db) == 9
     p1.knows = [p2, p3]
-    print len(Person.db)
+    print(len(Person.db))
     assert len(Person.db) == 14
     del p1.knows
-    print len(Person.db)
+    print(len(Person.db))
     assert len(Person.db) == 3
 
 
@@ -44,8 +44,8 @@ def test_addBNodeKnowsM():
     p3 = Person(last="Cooper", first="Matt")
     assert len(Person.db) == 9
     p1.knows = [p2, p3]
-    print len(Person.db)
+    print(len(Person.db))
     assert len(Person.db) == 11
     del p1.knows
-    print len(Person.db)
+    print(len(Person.db))
     assert len(Person.db) == 3
